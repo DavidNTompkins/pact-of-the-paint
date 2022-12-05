@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pact of the Paint</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+        }
+        form {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        label {
+            margin-top: 20px;
+        }
+        input[type="text"], input[type="email"] {
+            width: 50%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+        }
+        #gif-previews {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 50px;
+            align-items: center;
+        }
+        img {
+            max-width: 25%;
+            margin-right: 20px;
+            margin-bottom: 50px;
+        }
+
+    </style>
+</head>
+ <h1>Pact of the Paint</h1>
+ <h4>Use this form to upload your three gifs and pay the blood price ($5). This ritual is precise - follow this guide for best results. <br><br>Our incantations take approximately an hour to complete, you will receive a notice by sending (email). That email will contain a link to access a set of generated images and your character model.
+ </h4>
+    <form id="gif-uploader">
+        <label for="email"><b>Email</b> - This is where we'll send a link</label>
+        <input type="email" id="email" name="email"> <br>
+
+        <label for="character-name"><b>Character name</b> - a one-word name that is not a common word</label>
+        <input type="text" id="character-name" name="character-name"> <br>
+        
+        <label for="gif-files">Select 3 (and only 3) GIF files to upload:</label><br>
+        <input type="file" id="gif-files" name="gif-files" accept=".gif" multiple onchange="previewGifs(this)"><br><br>
+        <div id="gif-previews"></div>
+        <input type="submit" value="Submit">
+    </form>
+    <script>
+        // code to handle uploads
+        const apiKey = process.env.API_KEY;
+
+        // Get the form element
+        const form = document.getElementById('my-form');
+
+        // Listen for the form submit event
+        form.addEventListener('submit', (event) => {
+            // Prevent the default form submission behavior
+            event.preventDefault();
+
+            // Get the form data
+            const data = new FormData(form);
+
+            // Add the api key to the form data
+            data.append('apiKey', apiKey);
+
+            // Send a post request to the server with the form data
+            fetch('https://your-server.com/submit-form', {
+                method: 'POST',
+                body: data,
+            });
+        });
+
+
+        //Function to display gif previews
+        function previewGifs(input) {
+            var previews = document.getElementById('gif-previews');
+            previews.innerHTML = ''; // clear previous previews
+
+            for (var i = 0; i < input.files.length; i++) {
+                var file = input.files[i];
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    previews.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>
